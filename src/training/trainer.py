@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 
-def train(model, dataset, epochs=5, batch_size=32, lr=1e-3, device='cpu'):
+def train(model, dataset, epochs=10, batch_size=32, lr=1e-3, device='cpu'):
     """ Trains the given model on the provided dataset.
 
     Args:

@@ -61,5 +61,6 @@ if __name__ == '__main__':
     model.load_state_dict(torch.load("checkpoints/simple_gpt.pth", map_location=device))
     model.to(device)
 
+    model.load_state_dict(torch.load("checkpoints/simple_gpt.pth"))
     # Generate
-    generate(model, start_char='O', length=200, stoi=dataset.stoi, itos=dataset.itos, device=device, block_size=block_size)
+    generate(model, start_char='H', length=200, stoi=dataset.stoi, itos=dataset.itos, device=device)
