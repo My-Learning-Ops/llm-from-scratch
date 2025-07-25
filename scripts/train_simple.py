@@ -31,6 +31,13 @@ if __name__ == "__main__":
     # Instantiate the model with the vocabulary and block size from the dataset
     model = SimpleTransformer(dataset.vocab_size, block_size=block_size)
     
+    # Count params before training
+    total_params = sum(p.numel() for p in model.parameters())
+    print(f"Model has {total_params/1e6:.2f}M parameters")
+    
+    # Print training device
+    print(f"Training on: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU'}")
+    
     # Train the model on the dataset
     train(model, dataset)
     
