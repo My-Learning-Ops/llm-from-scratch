@@ -10,13 +10,18 @@ import torch
 from src.models.simple_gpt import SimpleTransformer
 from src.data.dataset import CharDataset
 from src.training.trainer import train
+from src.data.load_text import load_training_text
 
-text = """
-Once upon a time in a land far away, there lived a clever fox who loved to explore the forest.
-Every morning, the fox would greet the sun and begin a new adventure.
-"""
 
 if __name__ == "__main__":
+    
+    # Load and sanitize the training text data
+    text = load_training_text("src/data/training.txt",
+                                lowercase=True,
+                                remove_non_ascii=True,
+                                remove_punctuation=True,
+                                log_stats=True)
+    
     # Number of tokens per training example
     block_size = 64
     

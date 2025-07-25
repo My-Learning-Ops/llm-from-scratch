@@ -13,13 +13,18 @@ import torch
 from src.models.simple_gpt import SimpleTransformer
 from src.data.dataset import CharDataset
 
-def generate(model, start_char, length, stoi, itos, device='cpu'):
+from src.data.load_text import load_training_text
+
+def generate(model, start_prompt, length, stoi, itos, device='cpu'):
     
     # Set model to evaluation mode
     model.eval()
     
+    # Convert prompt string to list of indices
+    idx = torch.tensor([[stoi[c] for c in start_prompt]], dtype=torch.long).to(device)
+    
     # Initialize the input tensor with the index of the starting character
-    idx = torch.tensor([[stoi[start_char]]], dtype=torch.long).to(device)
+    # idx = torch.tensor([[stoi[start_char]]], dtype=torch.long).to(device)
     
     for _ in range(length):
         
@@ -29,8 +34,12 @@ def generate(model, start_char, length, stoi, itos, device='cpu'):
         # Forward pass, get the logits for the enitre current sequence
         logits = model(input_ids)
         
+        # Samples from probability distribution instead of taking argmax
+        probs = torch.softmax(logits[:, -1, :], dim=-1)
+        next_token = torch.multinomial(probs, num_samples=1)
+        
         # Pick the next token with the highest probability from last time step
-        next_token = torch.argmax(logits[:, -1, :], dim=-1, keepdim=True)
+        # next_token = torch.argmax(logits[:, -1, :], dim=-1, keepdim=True)
         
         # Append the predicted token to the input sequence
         # and increase the sequence length by 1
@@ -45,11 +54,12 @@ def generate(model, start_char, length, stoi, itos, device='cpu'):
 if __name__ == '__main__':
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-    # Use same training text and block size
-    text = """
-    Once upon a time in a land far away, there lived a clever fox who loved to explore the forest.
-    Every morning, the fox would greet the sun and begin a new adventure.
-    """
+    # Load and sanitize the training text data
+    text = load_training_text("src/data/training.txt", 
+                              lowercase=True, 
+                              remove_non_ascii=True, 
+                              remove_punctuation=True, 
+                              log_stats=False)
     
     block_size = 64
     embed_dim = 128
@@ -63,4 +73,4 @@ if __name__ == '__main__':
 
     model.load_state_dict(torch.load("checkpoints/simple_gpt.pth"))
     # Generate
-    generate(model, start_char='H', length=200, stoi=dataset.stoi, itos=dataset.itos, device=device)
+    generate(model, start_prompt='the ', length=200, stoi=dataset.stoi, itos=dataset.itos, device=device)
