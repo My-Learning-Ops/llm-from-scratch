@@ -12,65 +12,44 @@ Brendan Dileo, July 2025
 import torch
 from src.models.simple_gpt import SimpleTransformer
 from src.data.dataset import CharDataset
-
 from src.data.load_text import load_training_text
-
-def generate(model, start_prompt, length, stoi, itos, device='cpu'):
-    
-    # Set model to evaluation mode
-    model.eval()
-    
-    # Convert prompt string to list of indices
-    idx = torch.tensor([[stoi[c] for c in start_prompt]], dtype=torch.long).to(device)
-    
-    # Initialize the input tensor with the index of the starting character
-    # idx = torch.tensor([[stoi[start_char]]], dtype=torch.long).to(device)
-    
-    for _ in range(length):
-        
-        # Slice input tokens to the last block_size tokens
-        input_ids = idx[:, -block_size:]
-        
-        # Forward pass, get the logits for the enitre current sequence
-        logits = model(input_ids)
-        
-        # Samples from probability distribution instead of taking argmax
-        probs = torch.softmax(logits[:, -1, :], dim=-1)
-        next_token = torch.multinomial(probs, num_samples=1)
-        
-        # Pick the next token with the highest probability from last time step
-        # next_token = torch.argmax(logits[:, -1, :], dim=-1, keepdim=True)
-        
-        # Append the predicted token to the input sequence
-        # and increase the sequence length by 1
-        idx = torch.cat([idx, next_token], dim=1)
-
-    # Convert all indices in the generated sequence back to characters
-    output = ''.join([itos[i.item()] for i in idx[0]])
-    print("Generated text:")
-    print(output)
-
+from src.generate.generate import generate_text
 
 if __name__ == '__main__':
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     # Load and sanitize the training text data
-    text = load_training_text("src/data/training.txt", 
-                              lowercase=True, 
-                              remove_non_ascii=True, 
-                              remove_punctuation=True, 
-                              log_stats=False)
+    text = load_training_text(
+        "src/data/training.txt", 
+        lowercase=True, 
+        remove_non_ascii=True, 
+        remove_punctuation=True, 
+        log_stats=False
+    )
     
+    # Define block size and embedding dimension
     block_size = 64
     embed_dim = 256
     
+    # Create dataset
     dataset = CharDataset(text, block_size)
 
     # Recreate model
     model = SimpleTransformer(dataset.vocab_size, embed_dim=embed_dim, block_size=block_size)
     model.load_state_dict(torch.load("checkpoints/simple_gpt.pth", map_location=device))
+    model.load_state_dict(torch.load("checkpoints/simple_gpt.pth"))
     model.to(device)
 
-    model.load_state_dict(torch.load("checkpoints/simple_gpt.pth"))
     # Generate
-    generate(model, start_prompt='once upon a time', length=200, stoi=dataset.stoi, itos=dataset.itos, device=device)
+    generate_text(
+        model=model,
+        prompt='once upon a time',
+        max_length=200,
+        stoi=dataset.stoi,
+        itos=dataset.itos,
+        device=device,
+        method='top_p',
+        temperature=0.8,
+        top_k=50,
+        top_p=0.9
+    )
