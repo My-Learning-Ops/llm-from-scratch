@@ -44,10 +44,10 @@ if __name__ == "__main__":
     checkpoint_path = "checkpoints/best_model.pth"
     
     # Load the model state from the checkpoint if it exists
-    # if os.path.exists(checkpoint_path):
-    #     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
-    #     model.load_state_dict(checkpoint['model_state_dict'])
-    #     print(f"Loaded checkpoint weights from {checkpoint_path}")
+    if os.path.exists(checkpoint_path):
+        checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        print(f"Loaded checkpoint weights from {checkpoint_path}")
 
     
     # Count params before training

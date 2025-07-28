@@ -83,7 +83,7 @@ def train(model, dataset, epochs=10, batch_size=32, lr=1e-3, device='cpu'):
         print(f"Epoch {epoch+1} completed. Average Loss: {avg_loss:.4f}")
         
 
-def train_improved(model, dataset, epochs=50, batch_size=64, lr=3e-4,
+def train_improved(model, dataset, epochs=10, batch_size=64, lr=3e-4,
                    device='cpu', warmup_steps=1000, max_lr=3e-4, min_lr=1e-5,
                    grad_clip=1.0, eval_interval=500, checkpoint_dir="checkpoints"):
     """ An enhanced training loop with warmup, cosine annealing learning rate scheduling, gradient clipping, validation, and 
