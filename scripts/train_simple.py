@@ -9,11 +9,14 @@ Brendan Dileo, July 2025
 import torch
 from src.models.simple_gpt import SimpleTransformer
 from src.data.dataset import CharDataset
-from src.training.trainer import train
+from src.training.trainer import train_improved
 from src.data.load_text import load_training_text
 
 
 if __name__ == "__main__":
+    
+    # Set device to gpu otherwise cpu based on availability
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
     # Load and sanitize the training text data
     text = load_training_text("src/data/training.txt",
@@ -39,7 +42,7 @@ if __name__ == "__main__":
     print(f"Training on: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU'}")
     
     # Train the model on the dataset
-    train(model, dataset)
+    train_improved(model, dataset, device=device)
     
     # Save the trained model weights to a file
     torch.save(model.state_dict(), "checkpoints/simple_gpt.pth")

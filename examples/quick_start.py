@@ -62,7 +62,7 @@ if __name__ == '__main__':
                               log_stats=False)
     
     block_size = 64
-    embed_dim = 128
+    embed_dim = 256
     
     dataset = CharDataset(text, block_size)
 
