@@ -73,4 +73,4 @@ if __name__ == '__main__':
 
     model.load_state_dict(torch.load("checkpoints/simple_gpt.pth"))
     # Generate
-    generate(model, start_prompt='the ', length=200, stoi=dataset.stoi, itos=dataset.itos, device=device)
+    generate(model, start_prompt='once upon a time', length=200, stoi=dataset.stoi, itos=dataset.itos, device=device)

@@ -6,6 +6,7 @@ A minimal script to train a SimpleTransformer language model on a character-leve
 Brendan Dileo, July 2025
 """
 
+import os
 import torch
 from src.models.simple_gpt import SimpleTransformer
 from src.data.dataset import CharDataset
@@ -33,6 +34,15 @@ if __name__ == "__main__":
     
     # Instantiate the model with the vocabulary and block size from the dataset
     model = SimpleTransformer(dataset.vocab_size, block_size=block_size)
+    
+    checkpoint_path = "checkpoints/best_model.pth"
+    
+    # Load the model state from the checkpoint if it exists
+    if os.path.exists(checkpoint_path):
+        checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        print(f"Loaded checkpoint weights from {checkpoint_path}")
+
     
     # Count params before training
     total_params = sum(p.numel() for p in model.parameters())
