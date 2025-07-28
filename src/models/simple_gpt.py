@@ -54,8 +54,8 @@ class SimpleTransformer(nn.Module):
         # Initialize weights
         self.apply(self._init_weights)
         
-        # Tie token embedding and output projection weights (common practice)
-        self.head.weight = self.token_embed.weight
+        # Tie token embedding and output projection weights
+        self.head.weight = self.embed.weight
         
     
     def _init_weights(self, module):
@@ -77,7 +77,7 @@ class SimpleTransformer(nn.Module):
         assert T <= self.block_size, f"Sequence length {T} exceeds block size {self.block_size}"
         
         # Token embeddings + positional embeddings
-        tok_emb = self.token_embed(x)  # (B, T, embed_dim)
+        tok_emb = self.embed(x)  # (B, T, embed_dim)
         pos_emb = self.pos_embed[:, :T, :]  # (1, T, embed_dim)
         x = self.dropout(tok_emb + pos_emb)
         

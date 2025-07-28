@@ -12,7 +12,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import math
 
-class CasualSelfAttention(nn.Module):
+class CausalSelfAttention(nn.Module):
     """ Multi-head casual self attention mechanism.
     This module computes scaled dot-product attention seperately for multiple heads, masks future
     tokens to ensure casuality, and then projects concatenated outputs.
