@@ -9,7 +9,7 @@ Brendan Dileo, July 2025
 import os
 import torch
 from src.models.simple_gpt import SimpleTransformer
-from src.data.dataset import CharDataset
+from src.data.bpe_tokenizer import BPEDataset
 from src.training.trainer import train_improved
 from src.data.load_text import load_training_text
 
@@ -32,7 +32,11 @@ if __name__ == "__main__":
     block_size = 64
     
     # Create the dataset from text, split into input-output pairs of length block_size
-    dataset = CharDataset(text, block_size)
+    dataset = BPEDataset(
+        text, 
+        block_size,
+        sp_model_path="src/data/bpe_tokenizer.model"
+    )
     
     # Instantiate the model with the vocabulary and block size from the dataset
     model = SimpleTransformer(dataset.vocab_size, block_size=block_size)

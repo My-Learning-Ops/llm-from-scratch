@@ -11,7 +11,7 @@ Brendan Dileo, July 2025
 
 import torch
 from src.models.simple_gpt import SimpleTransformer
-from src.data.dataset import CharDataset
+from src.data.bpe_tokenizer import BPEDataset
 from src.data.load_text import load_training_text
 from src.generate.generate import generate_text
 
@@ -30,9 +30,10 @@ if __name__ == '__main__':
     # Define block size and embedding dimension
     block_size = 64
     embed_dim = 256
+    sp_model_path = "src/data/bpe_tokenizer.model"
     
     # Create dataset
-    dataset = CharDataset(text, block_size)
+    dataset = BPEDataset(text, block_size, sp_model_path)
 
     # Recreate model
     model = SimpleTransformer(dataset.vocab_size, embed_dim=embed_dim, block_size=block_size)
@@ -60,4 +61,6 @@ if __name__ == '__main__':
             top_k=50,
             top_p=0.9
         )
-        print(f"\nGenerated text:\n{output}")
+        
+        decoded_output = dataset.sp.decode(output)
+        print(f"\nDecoded Generated text:\n{decoded_output}")
