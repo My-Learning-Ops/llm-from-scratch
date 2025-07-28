@@ -13,7 +13,7 @@ import torch
 from src.models.simple_gpt import SimpleTransformer
 from src.data.bpe_tokenizer import BPEDataset
 from src.data.load_text import load_training_text
-from src.generate.generate import generate_text
+from src.generate.generate import generate_text_bpe
 
 if __name__ == '__main__':
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -49,18 +49,16 @@ if __name__ == '__main__':
             break
         
         # Generate text
-        output = generate_text(
-            model=model,
-            prompt=prompt,
-            max_length=200,
-            stoi=dataset.stoi,
-            itos=dataset.itos,
-            device=device,
-            method='top_p',
-            temperature=0.8,
-            top_k=50,
-            top_p=0.9
-        )
-        
-        decoded_output = dataset.sp.decode(output)
-        print(f"\nDecoded Generated text:\n{decoded_output}")
+        output_text = generate_text_bpe(
+        model=model,
+        prompt=prompt,
+        max_length=200,
+        dataset=dataset,
+        device=device,
+        method='top_p',
+        temperature=0.8,
+        top_k=50,
+        top_p=0.9
+    )
+
+    print(f"\nDecoded Generated text:\n{output_text}")
