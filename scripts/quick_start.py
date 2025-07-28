@@ -36,20 +36,28 @@ if __name__ == '__main__':
 
     # Recreate model
     model = SimpleTransformer(dataset.vocab_size, embed_dim=embed_dim, block_size=block_size)
-    model.load_state_dict(torch.load("checkpoints/simple_gpt.pth", map_location=device))
-    model.load_state_dict(torch.load("checkpoints/simple_gpt.pth"))
+    state_dict = torch.load("checkpoints/simple_gpt.pth", map_location=device)
+    model.load_state_dict(state_dict, strict=False)
     model.to(device)
-
-    # Generate
-    generate_text(
-        model=model,
-        prompt='once upon a time',
-        max_length=200,
-        stoi=dataset.stoi,
-        itos=dataset.itos,
-        device=device,
-        method='top_p',
-        temperature=0.8,
-        top_k=50,
-        top_p=0.9
-    )
+    
+    print("Enter prompts to generate text. Type 'exit' or 'quit' to stop.")
+    while True:
+        prompt = input("\nPrompt: ")
+        if prompt.lower() in ['exit', 'quit']:
+            print("Exiting...")
+            break
+        
+        # Generate text
+        output = generate_text(
+            model=model,
+            prompt=prompt,
+            max_length=200,
+            stoi=dataset.stoi,
+            itos=dataset.itos,
+            device=device,
+            method='top_p',
+            temperature=0.8,
+            top_k=50,
+            top_p=0.9
+        )
+        print(f"\nGenerated text:\n{output}")
