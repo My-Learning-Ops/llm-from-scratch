@@ -66,7 +66,8 @@ def sample_top_p(logits, p):
     cumulative_probs = torch.cumsum(probs, dim=-1)
 
     # Find cutoff where cumulative prob exceeds p
-    cutoff = torch.searchsorted(cumulative_probs, p, right=True)
+    # Only consider the 1D slice for single batch
+    cutoff = torch.searchsorted(cumulative_probs[0], p, right=True)
     cutoff = max(1, cutoff.item())  # always keep at least one token
 
     # Keep only top-p logits
