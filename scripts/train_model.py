@@ -1,6 +1,6 @@
 
 """ 
-train_simple.py
+train_model.py
 A minimal script to train a SimpleTransformer language model on a character-level dataset.
 
 Brendan Dileo, July 2025
@@ -20,11 +20,13 @@ if __name__ == "__main__":
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
     # Load and sanitize the training text data
-    text = load_training_text("src/data/training.txt",
-                                lowercase=True,
-                                remove_non_ascii=True,
-                                remove_punctuation=True,
-                                log_stats=True)
+    text = load_training_text(
+        "src/data/training.txt",
+        lowercase=True,
+        remove_non_ascii=True,
+        remove_punctuation=True,
+        log_stats=True
+    )
     
     # Number of tokens per training example
     block_size = 64
@@ -38,10 +40,10 @@ if __name__ == "__main__":
     checkpoint_path = "checkpoints/best_model.pth"
     
     # Load the model state from the checkpoint if it exists
-    if os.path.exists(checkpoint_path):
-        checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
-        model.load_state_dict(checkpoint['model_state_dict'])
-        print(f"Loaded checkpoint weights from {checkpoint_path}")
+    # if os.path.exists(checkpoint_path):
+    #     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+    #     model.load_state_dict(checkpoint['model_state_dict'])
+    #     print(f"Loaded checkpoint weights from {checkpoint_path}")
 
     
     # Count params before training
