@@ -11,7 +11,7 @@ import sentencepiece as spm
 if __name__ == "__main__":
     input_file = "src/data/training.txt"
     model_prefix = "src/data/bpe_tokenizer"
-    vocab_size = 10000
+    vocab_size = 20000
 
     model_file = f"{model_prefix}.model"
     if os.path.exists(model_file):
