@@ -11,3 +11,6 @@ __pycache__/
 # Tokenizer files
 bpe_tokenizer.model
 bpe_tokenizer.vocab
+
+# Notes
+notes.txt
