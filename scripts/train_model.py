@@ -12,6 +12,7 @@ from src.models.simple_gpt import SimpleTransformer
 from src.data.bpe_tokenizer import BPEDataset
 from src.training.trainer import train_improved
 from src.utils.text_processing import load_training_text
+from src.config.config import MODEL_CONFIG, TRAINING_CONFIG
 
 
 if __name__ == "__main__":
@@ -28,18 +29,23 @@ if __name__ == "__main__":
         log_stats=True
     )
     
-    # Number of tokens per training example
-    block_size = 64
     
     # Create the dataset from text, split into input-output pairs of length block_size
     dataset = BPEDataset(
         text, 
-        block_size,
+        MODEL_CONFIG['block_size'],
         sp_model_path="src/data/bpe_tokenizer.model"
     )
     
     # Instantiate the model with the vocabulary and block size from the dataset
-    model = SimpleTransformer(dataset.vocab_size, block_size=block_size)
+    model = SimpleTransformer(
+        dataset.vocab_size, 
+        embed_dim=MODEL_CONFIG['embed_dim'],
+        block_size=MODEL_CONFIG['block_size'],
+        n_heads=MODEL_CONFIG['n_heads'],
+        n_layers=MODEL_CONFIG['n_layers'],
+        dropout=MODEL_CONFIG['dropout']
+    )
     
     checkpoint_path = "checkpoints/best_model.pth"
     
@@ -58,8 +64,8 @@ if __name__ == "__main__":
     print(f"Training on: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU'}")
     
     # Train the model on the dataset
-    train_improved(model, dataset, device=device)
+    train_improved(model, dataset, device=device, **TRAINING_CONFIG)
     
     # Save the trained model weights to a file
-    torch.save(model.state_dict(), "checkpoints/simple_gpt.pth")
-    print("Model saved to checkpoints/simple_gpt.pth")
+    torch.save(model.state_dict(), checkpoint_path)
+    print(f"Model saved to {checkpoint_path}")

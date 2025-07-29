@@ -7,11 +7,12 @@ Brendan Dileo, July 2025
 
 import os
 import sentencepiece as spm
+from src.config.config import MODEL_CONFIG
 
 if __name__ == "__main__":
     input_file = "src/data/training.txt"
     model_prefix = "src/data/bpe_tokenizer"
-    vocab_size = 20000
+    vocab_size = MODEL_CONFIG['vocab_size']
 
     model_file = f"{model_prefix}.model"
     if os.path.exists(model_file):

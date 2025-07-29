@@ -14,6 +14,7 @@ from src.models.simple_gpt import SimpleTransformer
 from src.data.bpe_tokenizer import BPEDataset
 from src.utils.text_processing import load_training_text
 from src.generate.generate import generate_text_bpe
+from src.config.config import MODEL_CONFIG
 
 if __name__ == '__main__':
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -27,16 +28,20 @@ if __name__ == '__main__':
         log_stats=False
     )
     
-    # Define block size and embedding dimension
-    block_size = 64
-    embed_dim = 256
     sp_model_path = "src/data/bpe_tokenizer.model"
     
     # Create dataset
-    dataset = BPEDataset(text, block_size, sp_model_path)
+    dataset = BPEDataset(text, MODEL_CONFIG['block_size'], sp_model_path)
 
     # Recreate model
-    model = SimpleTransformer(dataset.vocab_size, embed_dim=embed_dim, block_size=block_size)
+    model = SimpleTransformer(
+        dataset.vocab_size,
+        embed_dim=MODEL_CONFIG['embed_dim'],
+        block_size=MODEL_CONFIG['block_size'],
+        n_heads=MODEL_CONFIG['n_heads'],
+        n_layers=MODEL_CONFIG['n_layers'],
+        dropout=MODEL_CONFIG['dropout']
+    )
     state_dict = torch.load("checkpoints/simple_gpt.pth", map_location=device)
     model.load_state_dict(state_dict, strict=False)
     model.to(device)
