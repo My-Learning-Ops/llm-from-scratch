@@ -1,13 +1,20 @@
 
 """ 
 train_tokenizer.py
+Defines a script to train a Byte Pair Encoding (BPE) tokenizer using SentencePiece.
+Aligned with BPEDataset for consistent tokenization in training & inference.
 
 Brendan Dileo, July 2025
 """
 
 import os
+import logging
 import sentencepiece as spm
 from src.config.config import MODEL_CONFIG
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     input_file = "src/data/training.txt"
