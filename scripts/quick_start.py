@@ -12,7 +12,7 @@ Brendan Dileo, July 2025
 import torch
 from src.models.simple_gpt import SimpleTransformer
 from src.data.bpe_tokenizer import BPEDataset
-from src.data.load_text import load_training_text
+from src.utils.text_processing import load_training_text
 from src.generate.generate import generate_text_bpe
 
 if __name__ == '__main__':

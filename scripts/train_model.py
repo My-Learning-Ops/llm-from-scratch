@@ -11,7 +11,7 @@ import torch
 from src.models.simple_gpt import SimpleTransformer
 from src.data.bpe_tokenizer import BPEDataset
 from src.training.trainer import train_improved
-from src.data.load_text import load_training_text
+from src.utils.text_processing import load_training_text
 
 
 if __name__ == "__main__":
