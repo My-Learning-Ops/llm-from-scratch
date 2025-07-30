@@ -8,9 +8,9 @@ Brendan Dileo, July 2025
 
 # Defines the model hyperparameters
 MODEL_CONFIG = {
-    'vocab_size': 50000,
+    'vocab_size': 29000,
     'embed_dim': 512,
-    'block_size': 512,
+    'block_size': 256,
     'n_heads': 8,
     'n_layers': 8,
     'dropout': 0.1
@@ -18,7 +18,7 @@ MODEL_CONFIG = {
 
 # Training related hyperparameters for the model
 TRAINING_CONFIG = {
-    'epochs': 10,
+    'epochs': 15,
     'batch_size': 16,
     'lr': 3e-4,
     'warmup_steps': 4000,
