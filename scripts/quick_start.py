@@ -22,16 +22,21 @@ if __name__ == '__main__':
     # Load and sanitize the training text data
     text = load_training_text(
         "src/data/training.txt", 
-        lowercase=True, 
+        lowercase=False, 
         remove_non_ascii=True, 
-        remove_punctuation=True, 
+        remove_punctuation=False, 
         log_stats=False
     )
     
     sp_model_path = "src/data/bpe_tokenizer.model"
     
     # Create dataset
-    dataset = BPEDataset(text, MODEL_CONFIG['block_size'], sp_model_path)
+    dataset = BPEDataset(
+        text, 
+        MODEL_CONFIG['block_size'], 
+        sp_model_path,
+        stride=128
+    )
 
     # Recreate model
     model = SimpleTransformer(
@@ -42,7 +47,7 @@ if __name__ == '__main__':
         n_layers=MODEL_CONFIG['n_layers'],
         dropout=MODEL_CONFIG['dropout']
     )
-    state_dict = torch.load("checkpoints/simple_gpt.pth", map_location=device)
+    state_dict = torch.load("checkpoints/best_model.pth", map_location=device)
     model.load_state_dict(state_dict, strict=False)
     model.to(device)
     

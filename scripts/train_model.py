@@ -34,6 +34,7 @@ if __name__ == "__main__":
     dataset = BPEDataset(
         text, 
         MODEL_CONFIG['block_size'],
+        stride=128,
         sp_model_path="src/data/bpe_tokenizer.model"
     )
     
