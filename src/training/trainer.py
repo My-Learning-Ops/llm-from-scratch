@@ -85,7 +85,8 @@ def train(model, dataset, epochs=10, batch_size=32, lr=1e-3, device='cpu'):
 
 def train_improved(model, dataset, epochs=10, batch_size=64, lr=3e-4,
                    device='cpu', warmup_steps=1000, max_lr=3e-4, min_lr=1e-5,
-                   grad_clip=1.0, eval_interval=500, checkpoint_dir="checkpoints"):
+                   grad_clip=1.0, eval_interval=500, checkpoint_dir="checkpoints",
+                   weight_decay=0.01):
     """ An enhanced training loop with warmup, cosine annealing learning rate scheduling, gradient clipping, validation, and 
     model checkpointing.
 
@@ -120,7 +121,7 @@ def train_improved(model, dataset, epochs=10, batch_size=64, lr=3e-4,
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=2)
 
     # Initialize AdamW optimizer with weight decay and specified hyperparameters
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=0.01, betas=(0.9, 0.95))
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay, betas=(0.9, 0.95))
     
     # Calculate total training steps across all epochs (used for scheduler)
     total_steps = epochs * len(train_loader)
